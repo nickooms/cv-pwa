@@ -18,6 +18,8 @@ import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/sty
 
 import MenuButton from './MenuButton';
 
+import FavoriteTechnologies from './FavoriteTechnologies';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -137,6 +139,7 @@ export default function ResponsiveDrawer(props: Props) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
+        <FavoriteTechnologies />
         <Typography paragraph>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
           ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
