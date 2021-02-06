@@ -100,7 +100,7 @@ export default function ResponsiveDrawer(props: Props) {
         <Toolbar>
           <MenuButton onClick={handleDrawerToggle} />
           <Typography variant="h6" noWrap>
-            Responsive drawer
+            Nick Ooms
           </Typography>
         </Toolbar>
       </AppBar>
