@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo, ReactElement, forwardRef } from 'react';
 import {
   AppBar,
   CssBaseline,
@@ -9,17 +9,27 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Collapse,
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import { Mail as MailIcon, Home as HomeIcon, ExpandLess, ExpandMore } from '@material-ui/icons';
 import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+// import { Route } from 'react-router';
+import {
+  Link as RouterLink,
+  LinkProps as RouterLinkProps,
+  BrowserRouter as Router,
+} from 'react-router-dom';
+import { Omit } from '@material-ui/types';
 
 import MenuButton from './MenuButton';
 import FavoriteTechnologies from './FavoriteTechnologies';
+import { Database } from './icons/Database';
+// import Technologies from './Technologies';
 
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,43 +57,86 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       padding: theme.spacing(3),
     },
+    nested: {
+      paddingLeft: theme.spacing(4),
+    },
   })
 );
+
+interface ListItemLinkProps {
+  icon?: ReactElement;
+  primary: string;
+  to: string;
+  nested?: boolean;
+}
+
+function ListItemLink(props: ListItemLinkProps) {
+  const { icon, primary, to, nested } = props;
+  const classes = useStyles();
+
+  const renderLink = useMemo(
+    () =>
+      forwardRef<any, Omit<RouterLinkProps, 'to'>>((itemProps, ref) => (
+        <RouterLink to={to} ref={ref} {...itemProps} />
+      )),
+    [to]
+  );
+
+  return (
+    <li>
+      <ListItem button component={renderLink} {...(nested && { className: classes.nested })}>
+        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
+        <ListItemText primary={primary} />
+      </ListItem>
+    </li>
+  );
+}
 
 export default function ResponsiveDrawer() {
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [skillsOpen, setSkillsOpen] = useState(true);
+
+  const handleSkillsClick = () => {
+    setSkillsOpen(!skillsOpen);
+  };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
   const drawer = (
-    <div>
-      <div className={classes.toolbar} />
-      <Divider />
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
+    <Router>
+      <div>
+        <div className={classes.toolbar} />
+        <Divider />
+        <List>
+          <ListItemLink to="/" primary="Home" icon={<HomeIcon />} />
+          <ListItem button onClick={handleSkillsClick}>
+            <ListItemIcon>
+              <AssignmentTurnedInIcon />
+            </ListItemIcon>
+            <ListItemText primary="Skills" />
+            {skillsOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
+          <Collapse in={skillsOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItemLink to="/technologies" primary="Technologies" icon={<HomeIcon />} nested />
+              <ListItemLink to="/databases" primary="Databases" icon={<Database />} nested />
+              <ListItemLink
+                to="/operating-systems"
+                primary="Operating Systems"
+                icon={<HomeIcon />}
+                nested
+              />
+            </List>
+          </Collapse>
+          <ListItemLink to="/mail" primary="Mail" icon={<MailIcon />} />
+        </List>
+      </div>
+    </Router>
   );
-
-  // const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
     <div className={classes.root}>
@@ -129,18 +182,7 @@ export default function ResponsiveDrawer() {
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <FavoriteTechnologies />
-        <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-          facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-          gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-          donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-          adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-          Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-          imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-          arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-          donec massa sapien faucibus et molestie ac.
-        </Typography>
+        {/* <Technologies /> */}
       </main>
     </div>
   );

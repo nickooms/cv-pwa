@@ -3,13 +3,14 @@ import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 
 interface Props {
   icon: ReactElement;
-  text: string;
+  primary: string;
+  secondary?: string;
 }
 
-const TechnologyListItem: FC<Props> = ({ icon, text }) => (
-  <ListItem button>
+const TechnologyListItem: FC<Props> = ({ icon, primary, secondary }) => (
+  <ListItem button alignItems="flex-start">
     <ListItemIcon>{icon}</ListItemIcon>
-    <ListItemText primary={text} />
+    <ListItemText primary={primary} {...(secondary && { secondary })} />
   </ListItem>
 );
 
