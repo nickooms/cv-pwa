@@ -4,6 +4,7 @@ import { React } from './React';
 import { NodeJS } from './NodeJS';
 import { WebGL } from './WebGL';
 import { Database } from './Database';
+import { Docker } from './Docker';
 
 export const Icons: { [id: string]: any } = {
   JavaScript,
@@ -12,4 +13,5 @@ export const Icons: { [id: string]: any } = {
   NodeJS,
   WebGL,
   Database,
+  Docker,
 };
